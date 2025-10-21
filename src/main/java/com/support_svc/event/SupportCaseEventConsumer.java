@@ -2,7 +2,7 @@ package com.support_svc.event;
 
 import com.support_svc.controller.dto.CreateCaseRequest;
 import com.support_svc.controller.dto.SupportCaseEvent;
-import com.support_svc.service.CaseService;
+import com.support_svc.service.CaseServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -13,10 +13,10 @@ public class SupportCaseEventConsumer {
 
     private static final Logger log = LoggerFactory.getLogger(SupportCaseEventConsumer.class);
 
-    private final CaseService caseService;
+    private final CaseServiceImpl caseServiceImpl;
 
-    public SupportCaseEventConsumer(CaseService caseService) {
-        this.caseService = caseService;
+    public SupportCaseEventConsumer(CaseServiceImpl caseServiceImpl) {
+        this.caseServiceImpl = caseServiceImpl;
     }
 
     @KafkaListener(topics = "case-events", groupId = "support-service-group")
@@ -30,7 +30,6 @@ public class SupportCaseEventConsumer {
         try {
             log.info("📥 Received support case event: {}", event);
 
-            // Map to internal DTO
             CreateCaseRequest request = CreateCaseRequest.builder()
                     .requesterId(event.getRequesterId())
                     .requesterName(event.getRequesterName())
@@ -38,13 +37,11 @@ public class SupportCaseEventConsumer {
                     .description(event.getDescription())
                     .build();
 
-            // Create the case
-            caseService.createCase(request);
+            caseServiceImpl.createCase(request);
 
             log.info("Support case created successfully for requesterId: {}", event.getRequesterId());
 
         } catch (Exception e) {
-            // Handle any processing errors
             log.error("Failed to process support case event: {}", event, e);
         }
     }

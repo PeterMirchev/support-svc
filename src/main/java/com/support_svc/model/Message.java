@@ -1,9 +1,7 @@
 package com.support_svc.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,4 +25,9 @@ public class Message {
     private String text;
     private String author;
     private LocalDateTime dateTime;
+
+    @ManyToOne
+    @JoinColumn(name = "case_id")
+    @JsonIgnore
+    private Case aCase;
 }
