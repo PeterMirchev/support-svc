@@ -4,7 +4,7 @@ import com.support_svc.controller.dto.CaseResponse;
 import com.support_svc.controller.dto.CreateCaseRequest;
 import com.support_svc.controller.dto.UpdateCaseRequest;
 import com.support_svc.model.Case;
-import com.support_svc.service.CaseServiceImpl;
+import com.support_svc.service.impl.CaseServiceImpl;
 import com.support_svc.utils.Mapper;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

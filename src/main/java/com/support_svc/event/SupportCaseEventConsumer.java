@@ -2,7 +2,7 @@ package com.support_svc.event;
 
 import com.support_svc.controller.dto.CreateCaseRequest;
 import com.support_svc.controller.dto.SupportCaseEvent;
-import com.support_svc.service.CaseServiceImpl;
+import com.support_svc.service.impl.CaseServiceImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
