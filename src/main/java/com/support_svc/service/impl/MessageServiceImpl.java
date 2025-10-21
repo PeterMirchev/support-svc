@@ -1,7 +1,8 @@
-package com.support_svc.service;
+package com.support_svc.service.impl;
 
 import com.support_svc.model.Message;
 import com.support_svc.repository.MessageRepository;
+import com.support_svc.service.MessageService;
 import org.springframework.stereotype.Service;
 
 import java.util.UUID;

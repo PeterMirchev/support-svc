@@ -1,4 +1,4 @@
-package com.support_svc.service;
+package com.support_svc.service.impl;
 
 import com.support_svc.ResourceNotFoundException;
 import com.support_svc.controller.dto.CaseResponse;
@@ -7,7 +7,11 @@ import com.support_svc.controller.dto.UpdateCaseRequest;
 import com.support_svc.model.Case;
 import com.support_svc.model.Message;
 import com.support_svc.repository.CaseRepository;
+import com.support_svc.service.CacheService;
+import com.support_svc.service.CaseService;
 import com.support_svc.utils.Mapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +21,8 @@ import java.util.UUID;
 
 @Service
 public class CaseServiceImpl implements CaseService {
+
+    private static final Logger log = LoggerFactory.getLogger(CaseServiceImpl.class);
 
     private final CaseRepository caseRepository;
     private final MessageServiceImpl messageService;
@@ -37,6 +43,8 @@ public class CaseServiceImpl implements CaseService {
         Case persistedCase =  caseRepository.save(newCase);
         cacheService.saveCase(persistedCase);
 
+        log.info("Case with id [{}] created", persistedCase.getId());
+
         return persistedCase;
     }
 
@@ -45,15 +53,19 @@ public class CaseServiceImpl implements CaseService {
 
         Case aCase = cacheService.getCase(id);
         if (aCase != null) {
+            log.info("Cache hit for case ID [{}]", id);
             return aCase;
         }
 
+        log.info("Cache miss for case ID [{}], loading from DB", id);
         aCase = caseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Case with id " + id + " not found"));
 
         cacheService.saveCase(aCase);
+        log.info("Case ID [{}] saved to cache after DB fetch", id);
         return aCase;
     }
+
 
     @Override
     public List<Case> getAllCasesByOwnerId(UUID userRequesterId) {
@@ -78,8 +90,9 @@ public class CaseServiceImpl implements CaseService {
         aCase.setUpdatedOn(LocalDateTime.now());
 
         Case updatedCase = caseRepository.save(aCase);
-
         cacheService.saveCase(updatedCase);
+
+        log.info("Updating case [{}], new status [{}], adding message by user [{}]", caseId, request.getCaseStatus(), userId);
 
         return updatedCase;
     }

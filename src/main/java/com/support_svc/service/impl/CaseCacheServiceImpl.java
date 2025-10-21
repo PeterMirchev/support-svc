@@ -1,9 +1,12 @@
-package com.support_svc.service;
+package com.support_svc.service.impl;
 
 import com.support_svc.model.Case;
 import com.support_svc.model.enums.CaseStatus;
 import com.support_svc.repository.CaseRepository;
+import com.support_svc.service.CacheService;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,8 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class CaseCacheServiceImpl implements CacheService {
+
+    private static final Logger log = LoggerFactory.getLogger(CaseCacheServiceImpl.class);
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final CaseRepository caseRepository;
@@ -36,6 +41,8 @@ public class CaseCacheServiceImpl implements CacheService {
 
         redisTemplate.opsForHash().putAll(key, map);
         redisTemplate.opsForSet().add("cases:all", aCase.getId().toString());
+
+        log.info("Saving case with ID [{}] and status [{}]", aCase.getId(), aCase.getStatus());
     }
 
     @Override
@@ -43,7 +50,13 @@ public class CaseCacheServiceImpl implements CacheService {
 
         String key = buildKey(id);
         Map<Object, Object> map = redisTemplate.opsForHash().entries(key);
-        if (map.isEmpty()) return null;
+
+        if (map.isEmpty()) {
+            log.info("Cache miss for case ID [{}]", id);
+            return null;
+        } else {
+            log.info("Cache hit for case ID [{}]", id);
+        }
 
         return Case.builder()
                 .id(UUID.fromString((String) map.get("id")))
@@ -67,11 +80,13 @@ public class CaseCacheServiceImpl implements CacheService {
 
     @Override
     public List<Case> findAllCached() {
+
         Set<Object> ids = redisTemplate.opsForSet().members("cases:all");
+
         if (ids == null || ids.isEmpty()) {
-            // Fallback to DB if set is empty
             List<Case> allCases = caseRepository.findAll();
-            allCases.forEach(this::saveCase); // populate cache
+            allCases.forEach(this::saveCase);
+            log.info("Cache is empty. Loading {} cases from DB and populating cache", allCases.size());
             return allCases;
         }
 
