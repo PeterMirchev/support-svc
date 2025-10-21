@@ -78,24 +78,6 @@ public class CaseCacheServiceImpl implements CacheService {
         redisTemplate.delete(buildKey(id));
     }
 
-    @Override
-    public List<Case> findAllCached() {
-
-        Set<Object> ids = redisTemplate.opsForSet().members("cases:all");
-
-        if (ids == null || ids.isEmpty()) {
-            List<Case> allCases = caseRepository.findAll();
-            allCases.forEach(this::saveCase);
-            log.info("Cache is empty. Loading {} cases from DB and populating cache", allCases.size());
-            return allCases;
-        }
-
-        return ids.stream()
-                .map(id -> this.getCase(UUID.fromString(id.toString())))
-                .toList();
-    }
-
-
     private String buildKey(UUID caseId) {
 
         return "case:" + caseId;

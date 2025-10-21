@@ -111,10 +111,4 @@ public class CaseServiceImpl implements CaseService {
                 .map(Mapper::mapToCaseResponse)
                 .toList();
     }
-
-    public List<Case> findAllCached() {
-
-        return cacheService.findAllCached();
-    }
-
 }
