@@ -29,7 +29,6 @@ public class CaseCacheServiceImpl implements CacheService {
             String json = objectMapper.writeValueAsString(aCase);
 
             redisTemplate.opsForValue().set(key, json);
-
             redisTemplate.opsForSet().add("cases:all", key);
 
             log.info("Saved case [{}] to Redis as JSON", aCase.getId());

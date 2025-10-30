@@ -1,11 +1,10 @@
 package com.support_svc.service.impl;
 
-import com.support_svc.ResourceNotFoundException;
+import com.support_svc.exception.ResourceNotFoundException;
 import com.support_svc.controller.dto.CaseResponse;
-import com.support_svc.controller.dto.CreateCaseRequest;
-import com.support_svc.controller.dto.UpdateCaseRequest;
+import com.support_svc.event.dto.CaseUpdateRequest;
+import com.support_svc.controller.dto.CaseCreateRequest;
 import com.support_svc.model.Case;
-import com.support_svc.model.Message;
 import com.support_svc.repository.CaseRepository;
 import com.support_svc.service.CacheService;
 import com.support_svc.service.CaseService;
@@ -36,7 +35,7 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     @Transactional
-    public Case createCase(CreateCaseRequest request) {
+    public Case createCase(CaseCreateRequest request) {
 
         Case newCase = Mapper.mapToCase(request);
 
@@ -68,33 +67,22 @@ public class CaseServiceImpl implements CaseService {
 
 
     @Override
-    public List<Case> getAllCasesByOwnerId(UUID userRequesterId) {
+    public List<Case> getAllCasesByOwnerEmail(String ownerEmail) {
 
-        return caseRepository.findAllByCaseOwnerIs(userRequesterId);
+        return caseRepository.findAllByCaseOwnerEmail(ownerEmail);
     }
 
     @Override
-    public Case updateCase(UUID caseId, UpdateCaseRequest request, UUID userId) {
+    public Case updateCase(CaseUpdateRequest caseUpdateRequest) {
 
-        Message message = Message.builder()
-                .author(String.valueOf(userId))
-                .text(request.getMessage())
-                .dateTime(LocalDateTime.now())
-                .build();
+        Case aCase = mapCase(caseUpdateRequest);
 
-        Message persistedMessage = messageService.save(message);
-        Case aCase = getCase(caseId);
-        aCase.getMessages().add(persistedMessage);
-        aCase.setCaseName(request.getCaseName() != null ? request.getCaseName() : aCase.getCaseName());
-        aCase.setStatus(request.getCaseStatus() != null ? request.getCaseStatus() : aCase.getStatus());
-        aCase.setUpdatedOn(LocalDateTime.now());
+        Case persistedCase = caseRepository.save(aCase);
+        cacheService.saveCase(persistedCase);
 
-        Case updatedCase = caseRepository.save(aCase);
-        cacheService.saveCase(updatedCase);
+        log.info("User with email: [{}] updated case [{}]", caseUpdateRequest.getOwnerEmail(), aCase.getId());
 
-        log.info("Updating case [{}], new status [{}], adding message by user [{}]", caseId, request.getCaseStatus(), userId);
-
-        return updatedCase;
+        return persistedCase;
     }
 
     @Override
@@ -102,6 +90,7 @@ public class CaseServiceImpl implements CaseService {
 
     }
 
+    @Override
     public List<CaseResponse> findAll() {
 
         List<Case> allCases = caseRepository.findAll();
@@ -110,5 +99,25 @@ public class CaseServiceImpl implements CaseService {
                 .stream()
                 .map(Mapper::mapToCaseResponse)
                 .toList();
+    }
+
+    private Case mapCase(CaseUpdateRequest caseUpdateRequest) {
+
+        Case aCase = getCase(caseUpdateRequest.getCaseId());
+
+        if (caseUpdateRequest.getCaseName() != null) {
+            aCase.setCaseName(caseUpdateRequest.getCaseName());
+        }
+        if (caseUpdateRequest.getDescription() != null) {
+            aCase.setCaseDescription(caseUpdateRequest.getDescription());
+        }
+        if (caseUpdateRequest.getStatus() != aCase.getStatus()) {
+
+            aCase.setStatus(caseUpdateRequest.getStatus());
+        }
+
+        aCase.setCaseOwnerEmail(caseUpdateRequest.getOwnerEmail());
+        aCase.setUpdatedOn(LocalDateTime.now());
+        return aCase;
     }
 }

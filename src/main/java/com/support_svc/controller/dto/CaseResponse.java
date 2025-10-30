@@ -14,7 +14,7 @@ import java.util.UUID;
 public class CaseResponse {
 
     private UUID id;
-    private UUID caseOwner;
+    private String caseOwnerEmail;
     private UUID requesterId;
     private String requesterName;
     private String requesterEmail;
@@ -23,5 +23,4 @@ public class CaseResponse {
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
     private CaseStatus status;
-    private List<Message> messages;
 }

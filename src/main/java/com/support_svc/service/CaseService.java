@@ -1,7 +1,9 @@
 package com.support_svc.service;
 
-import com.support_svc.controller.dto.CreateCaseRequest;
-import com.support_svc.controller.dto.UpdateCaseRequest;
+import com.support_svc.controller.dto.CaseResponse;
+import com.support_svc.event.dto.CaseMessageRequest;
+import com.support_svc.event.dto.CaseUpdateRequest;
+import com.support_svc.controller.dto.CaseCreateRequest;
 import com.support_svc.model.Case;
 
 import java.util.List;
@@ -9,13 +11,15 @@ import java.util.UUID;
 
 public interface CaseService {
 
-    Case createCase(CreateCaseRequest request);
+    Case createCase(CaseCreateRequest request);
 
     Case getCase(UUID id);
 
-    List<Case> getAllCasesByOwnerId(UUID userRequesterId);
+    List<Case> getAllCasesByOwnerEmail(String ownerEmail);
 
-    Case updateCase(UUID caseId, UpdateCaseRequest request, UUID userId);
+    Case updateCase(CaseUpdateRequest caseUpdateRequest);
 
     void deleteCase();
+
+    List<CaseResponse> findAll();
 }

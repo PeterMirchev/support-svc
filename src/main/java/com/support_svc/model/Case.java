@@ -22,7 +22,7 @@ public class Case {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
-    private UUID caseOwner;
+    private String caseOwnerEmail;
     private UUID requesterId;
     private String requesterName;
     private String requesterEmail;
@@ -31,8 +31,5 @@ public class Case {
     private LocalDateTime createdOn;
     private LocalDateTime updatedOn;
     private CaseStatus status;
-
-    @OneToMany(mappedBy = "aCase", fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Message> messages = new ArrayList<>();
 }
 

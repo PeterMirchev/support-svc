@@ -1,8 +1,7 @@
 package com.support_svc.controller;
 
 import com.support_svc.controller.dto.CaseResponse;
-import com.support_svc.controller.dto.CreateCaseRequest;
-import com.support_svc.controller.dto.UpdateCaseRequest;
+import com.support_svc.controller.dto.CaseCreateRequest;
 import com.support_svc.model.Case;
 import com.support_svc.service.impl.CaseServiceImpl;
 import com.support_svc.utils.Mapper;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/cases")
@@ -23,7 +21,7 @@ public class CaseController {
     }
 
     @PostMapping()
-    public ResponseEntity<CaseResponse> create(@RequestBody CreateCaseRequest request) {
+    public ResponseEntity<CaseResponse> create(@RequestBody CaseCreateRequest request) {
 
         Case newCase = caseServiceImpl.createCase(request);
 
@@ -32,6 +30,7 @@ public class CaseController {
         return ResponseEntity.ok(caseResponse);
     }
 
+/*
     @PutMapping("/{caseId}")
     public ResponseEntity<CaseResponse> update(@RequestBody UpdateCaseRequest request,
                                                @PathVariable UUID caseId,
@@ -43,6 +42,7 @@ public class CaseController {
 
         return ResponseEntity.ok(caseResponse);
     }
+*/
 
     @GetMapping
     public ResponseEntity<List<CaseResponse>> getAll() {

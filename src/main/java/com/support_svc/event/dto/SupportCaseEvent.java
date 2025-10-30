@@ -1,4 +1,4 @@
-package com.support_svc.controller.dto;
+package com.support_svc.event.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -10,5 +10,5 @@ import java.util.UUID;
 @RequestMapping
 public interface CaseRepository extends JpaRepository<Case, UUID> {
 
-    List<Case> findAllByCaseOwnerIs(UUID userRequesterId);
+    List<Case> findAllByCaseOwnerEmail(String userRequesterId);
 }

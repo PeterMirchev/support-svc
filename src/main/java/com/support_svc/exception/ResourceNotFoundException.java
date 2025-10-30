@@ -1,4 +1,4 @@
-package com.support_svc;
+package com.support_svc.exception;
 
 public class ResourceNotFoundException extends RuntimeException {
 

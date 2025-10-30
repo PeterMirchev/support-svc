@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Data
 @Builder
-public class CreateCaseRequest {
+public class CaseCreateRequest {
 
     private UUID requesterId;
     private String requesterName;
