@@ -1,6 +1,7 @@
 package com.support_svc.service.impl;
 
 import com.support_svc.controller.dto.CaseCreateRequest;
+import com.support_svc.controller.dto.CaseResponse;
 import com.support_svc.event.dto.CaseUpdateRequest;
 import com.support_svc.model.Case;
 import com.support_svc.model.enums.CaseStatus;
@@ -145,5 +146,22 @@ class CaseServiceUTest {
         // then
         assertEquals(updatedCase.getCaseDescription(), request.getDescription());
         verify(cacheService, times(2)).saveCase(aCase);
+    }
+
+    @Test
+    void whenFindAll_thenHappyPath() {
+
+        // given
+        List<Case> cases = List.of(
+                Case.builder().caseOwnerEmail("test@email.com").build(),
+                Case.builder().caseOwnerEmail("test2@email.com").build(),
+                Case.builder().caseOwnerEmail("test3@email.com").build());
+        // when
+        when(caseRepository.findAll()).thenReturn(cases);
+        List<CaseResponse> response = caseService.findAll();
+
+        // then
+        assertNotNull(response);
+        assertEquals(response.size(), 3);
     }
 }
