@@ -24,12 +24,11 @@ public class CaseServiceImpl implements CaseService {
     private static final Logger log = LoggerFactory.getLogger(CaseServiceImpl.class);
 
     private final CaseRepository caseRepository;
-    private final MessageServiceImpl messageService;
+
     private final CacheService cacheService;
 
-    public CaseServiceImpl(CaseRepository caseRepository, MessageServiceImpl messageService, CacheService cacheService) {
+    public CaseServiceImpl(CaseRepository caseRepository, CacheService cacheService) {
         this.caseRepository = caseRepository;
-        this.messageService = messageService;
         this.cacheService = cacheService;
     }
 
