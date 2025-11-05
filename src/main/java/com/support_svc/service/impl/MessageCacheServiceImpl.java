@@ -86,6 +86,10 @@ public class MessageCacheServiceImpl {
         }
     }
 
+    public void evictAll() {
+        redisTemplate.getConnectionFactory().getConnection().flushAll();
+    }
+
     private Optional<String> getMessageJson(String key) {
 
         try {
