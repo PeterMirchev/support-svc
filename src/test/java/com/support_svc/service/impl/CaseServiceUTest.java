@@ -3,6 +3,7 @@ package com.support_svc.service.impl;
 import com.support_svc.controller.dto.CaseCreateRequest;
 import com.support_svc.controller.dto.CaseResponse;
 import com.support_svc.event.dto.CaseUpdateRequest;
+import com.support_svc.exception.ResourceNotFoundException;
 import com.support_svc.model.Case;
 import com.support_svc.model.enums.CaseStatus;
 import com.support_svc.repository.CaseRepository;
@@ -93,6 +94,16 @@ class CaseServiceUTest {
         verify(cacheService, times(1)).saveCase(expectedCase);
         verify(cacheService, times(1)).getCase(expectedCase.getId());
         verify(caseRepository, times(1)).findById(any());
+    }
+
+    @Test
+    void whenGetCase_thenThrowResourceNotFoundException() {
+
+        UUID id = UUID.randomUUID();
+        when(caseRepository.findById(id))
+                .thenThrow(new ResourceNotFoundException("Case with id %s not found".formatted(id)));
+
+        assertThrows(ResourceNotFoundException.class, () -> caseService.getCase(id));
     }
 
     @Test

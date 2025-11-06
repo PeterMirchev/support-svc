@@ -85,11 +85,6 @@ public class CaseServiceImpl implements CaseService {
     }
 
     @Override
-    public void deleteCase() {
-
-    }
-
-    @Override
     public List<CaseResponse> findAll() {
 
         List<Case> allCases = caseRepository.findAll();

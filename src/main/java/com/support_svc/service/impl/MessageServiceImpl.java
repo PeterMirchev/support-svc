@@ -77,11 +77,4 @@ public class MessageServiceImpl implements MessageService {
 
         return dbMessages;
     }
-
-    @Override
-    public void deleteMessage(UUID id) {
-
-        messageRepository.deleteById(id);
-        log.info("Message [{}] deleted from DB", id);
-    }
 }

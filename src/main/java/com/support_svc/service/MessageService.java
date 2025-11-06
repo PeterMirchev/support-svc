@@ -8,14 +8,9 @@ import java.util.UUID;
 
 public interface MessageService {
 
-
-
     void sendMessage(CaseMessageRequest event);
 
     Message getMessage(UUID id);
 
     List<Message> getAllMessagesByCase(UUID caseId);
-
-    void deleteMessage(UUID id);
-
 }

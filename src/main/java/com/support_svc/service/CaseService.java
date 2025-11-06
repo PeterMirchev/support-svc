@@ -19,7 +19,5 @@ public interface CaseService {
 
     Case updateCase(CaseUpdateRequest caseUpdateRequest);
 
-    void deleteCase();
-
     List<CaseResponse> findAll();
 }
