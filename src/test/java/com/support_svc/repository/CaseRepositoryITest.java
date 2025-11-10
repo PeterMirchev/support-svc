@@ -1,6 +1,6 @@
 package com.support_svc.repository;
 
-import com.support_svc.TestRedisConfig;
+import com.support_svc.config.TestRedisConfig;
 import com.support_svc.model.Case;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -60,14 +60,6 @@ public class CaseCacheServiceImpl implements CacheService {
         }
     }
 
-    @Override
-    public void deleteCase(UUID id) {
-
-        String key = buildKey(id);
-        redisTemplate.delete(key);
-        log.info("Deleted case [{}] from Redis", id);
-    }
-
     private String buildKey(UUID caseId) {
 
         return "case:" + caseId;

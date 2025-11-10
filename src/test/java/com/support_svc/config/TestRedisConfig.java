@@ -1,4 +1,4 @@
-package com.support_svc;
+package com.support_svc.config;
 
 import org.springframework.boot.test.context.TestConfiguration;
 import org.springframework.context.annotation.Bean;

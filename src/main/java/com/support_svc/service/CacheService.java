@@ -9,6 +9,4 @@ public interface CacheService {
     void saveCase(Case c);
 
     Case getCase(UUID id);
-
-    void deleteCase(UUID id);
 }

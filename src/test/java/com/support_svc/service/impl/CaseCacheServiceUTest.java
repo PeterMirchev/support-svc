@@ -2,17 +2,19 @@ package com.support_svc.service.impl;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.support_svc.config.TestRedisConfig;
 import com.support_svc.model.Case;
-import com.support_svc.service.impl.CaseCacheServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.annotation.Import;
 import org.springframework.data.redis.core.RedisTemplate;
 
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.core.SetOperations;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -22,12 +24,14 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
+@Import(TestRedisConfig.class)
 public class CaseCacheServiceUTest {
 
     @InjectMocks
     private CaseCacheServiceImpl cacheService;
     @Mock
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
     @Mock
     private ValueOperations<String, String> valueOps;
     @Mock
@@ -65,9 +69,10 @@ public class CaseCacheServiceUTest {
         // given
         Case aCase = Case.builder().id(UUID.randomUUID()).build();
 
-        // when
         when(redisTemplate.opsForValue())
                 .thenThrow(new RuntimeException("Redis unavailable"));
+
+        // when
         cacheService.saveCase(aCase);
 
         // then
@@ -97,8 +102,9 @@ public class CaseCacheServiceUTest {
 
         when(redisTemplate.opsForValue()).thenThrow(new RuntimeException("Redis fail"));
 
-        cacheService.getCase(UUID.randomUUID());
+        Case aCase = cacheService.getCase(UUID.randomUUID());
 
         verify(redisTemplate, times(1)).opsForValue();
+        assertNull(aCase);
     }
 }

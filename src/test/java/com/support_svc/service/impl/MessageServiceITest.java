@@ -1,6 +1,6 @@
 package com.support_svc.service.impl;
 
-import com.support_svc.TestRedisConfig;
+import com.support_svc.config.TestRedisConfig;
 import com.support_svc.event.dto.CaseMessageRequest;
 import com.support_svc.model.Message;
 import com.support_svc.repository.CaseRepository;
@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 @SpringBootTest
 @ActiveProfiles("test")
